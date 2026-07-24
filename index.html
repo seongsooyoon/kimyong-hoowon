@@ -138,7 +138,8 @@
         <div class="chip" data-amt="100000">10만원</div>
       </div>
     </div>
-    <button class="toss" id="nhBtn" style="width:calc(100% - 32px);cursor:pointer">🏦 <b style="color:#018941">농협</b>으로 간편송금하기</button>
+    <a class="toss" id="tossBtn" href="#" style="width:calc(100% - 32px)">⚡ <b style="color:#0064FF">토스</b>로 후원계좌 송금하기</a>
+    <p class="hint" style="margin-top:8px">누르면 토스가 열립니다 · 입금은 <b>농협 후원계좌</b>로 들어갑니다</p>
   </div>
 
   <!-- 후원 안내 -->
@@ -181,10 +182,14 @@ mail.textContent=CONFIG.receiptEmail; foot.textContent='영수증 문의 · '+CO
 (function(){const i=new Image();i.onload=function(){const a=document.getElementById('credAv');
   a.style.background="url('assets/wws.jpg') center/cover no-repeat";a.textContent='';};i.src='assets/wws.jpg';})();
 
-let sel=0;
+let sel=0; const digits=CONFIG.accountNumber.replace(/[^0-9]/g,'');
+function updToss(){const a=sel?`&amount=${sel}`:'';
+  tossBtn.setAttribute('href',
+    `supertoss://send?bank=${encodeURIComponent(CONFIG.bankName)}&accountNo=${digits}${a}`);}
+updToss();
 document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
   document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
-  sel=parseInt(c.dataset.amt,10);}));
+  sel=parseInt(c.dataset.amt,10);updToss();}));
 function T(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');
   clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),2300);}
 async function cp(x){try{await navigator.clipboard.writeText(x);return true;}catch(e){
@@ -193,17 +198,9 @@ async function cp(x){try{await navigator.clipboard.writeText(x);return true;}cat
   document.body.removeChild(t);return o;}}
 copyBtn.addEventListener('click',async()=>{const o=await cp(CONFIG.accountNumber);
   T(o?'✅ 계좌번호를 복사했어요! 은행 앱에 붙여넣기 하세요':'번호를 길게 눌러 복사해 주세요');});
-// 농협 간편송금: 계좌 자동복사 → 농협앱 실행 (앱에 붙여넣기)
-nhBtn.addEventListener('click',async()=>{
-  await cp(CONFIG.accountNumber);
-  T('✅ 계좌 복사 완료! 농협 앱을 열어 붙여넣기 하세요');
-  const schemes=['nhallonepay://','nhsmartbanking://','nhonqbank://'];
-  let done=false;
-  const tryOpen=(i)=>{if(i>=schemes.length||done)return;
-    try{const t=Date.now();location.href=schemes[i];
-      setTimeout(()=>{if(!done&&Date.now()-t<1500)tryOpen(i+1);},700);}catch(e){tryOpen(i+1);}};
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)done=true;},{once:true});
-  setTimeout(()=>tryOpen(0),450);});
+// 토스 송금: 계좌 미리 복사(안전망) 후 토스 앱 열림
+tossBtn.addEventListener('click',()=>{cp(CONFIG.accountNumber);
+  T('토스가 열립니다 · 입금은 농협 후원계좌로 들어가요');});
 async function sh(){const d={title:CONFIG.shareTitle,text:CONFIG.shareText,url:location.href};
   if(navigator.share){try{await navigator.share(d);return true;}catch(e){}}return false;}
 shareKko.addEventListener('click',async()=>{if(!(await sh())){const o=await cp(location.href);
