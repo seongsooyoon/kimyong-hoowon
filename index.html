@@ -41,14 +41,15 @@
   .hero .pic img{width:100%;height:100%;object-fit:cover;object-position:50% 6%;display:block}
   .hero .pic::before{content:"";position:absolute;inset:0;
     background:linear-gradient(90deg,rgba(10,42,80,.96) 0%,rgba(10,42,80,.35) 16%,rgba(10,42,80,0) 40%)}
-  .hero .tx{position:absolute;left:16px;top:0;bottom:0;width:48%;display:flex;flex-direction:column;
+  .hero .tx{position:absolute;left:16px;top:0;bottom:0;width:58%;display:flex;flex-direction:column;
     justify-content:center;z-index:2}
   .hero .tag{display:inline-block;background:var(--blue);color:#fff;font-weight:700;font-size:11.5px;
     padding:4px 9px;border-radius:999px;margin-bottom:8px;width:fit-content}
-  .hero .sm{color:#cfe0f7;font-size:13px;font-weight:600}
-  .hero .lg{font-size:23px;font-weight:900;line-height:1.2;color:#fff;margin-top:2px}
+  .hero .sm{color:#cfe0f7;font-size:12.5px;font-weight:600}
+  .hero .lg{font-size:20px;font-weight:900;line-height:1.2;color:#fff;margin-top:2px;white-space:nowrap}
   .hero .lg .y{color:var(--yellow)}
-  .hero .nm{margin-top:8px;font-size:14px;color:#e9f1ff;font-weight:800}
+  .hero .nm{margin-top:9px;font-size:12px;color:#cfe0f7;font-weight:700;line-height:1.35}
+  .hero .nm b{font-size:18px;color:#fff;font-weight:900;display:inline-block;margin-top:1px}
 
   /* ── 후원 계좌 카드 ── */
   .card{margin:14px 14px 0;background:#fff;color:var(--ink);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
@@ -116,8 +117,8 @@
     font-size:11px;color:#9fb3d1;overflow:hidden}
   .cred .t{font-size:12.8px;color:#c7d6ec}.cred .t b{color:#fff}
 
-  .share{display:flex;gap:9px;margin:14px 14px 0}
-  .share button{flex:1;border:0;border-radius:12px;padding:13px;font-weight:900;font-size:14px;cursor:pointer}
+  .share{display:flex;flex-direction:column;gap:9px;margin:14px 14px 0}
+  .share button{width:100%;border:0;border-radius:12px;padding:14px;font-weight:900;font-size:15px;cursor:pointer;white-space:nowrap}
   .share .kko{background:#FEE500;color:#191600}.share .lnk{background:#fff;color:var(--ink)}
   footer{margin:16px 16px 0;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);
     font-size:11px;line-height:1.6;text-align:center}
@@ -142,7 +143,7 @@
       <span class="tag">김용을 후원해 주세요</span>
       <span class="sm">이재명의 대변인에서,</span>
       <span class="lg">평당원의 <span class="y">대변인</span>으로.</span>
-      <span class="nm">더불어민주당 최고위원 후보 · 김용</span>
+      <span class="nm">더불어민주당 최고위원 후보<br><b>김용</b></span>
     </div>
     <div class="pic"><img src="assets/photo.jpg" alt="김용 후보" /></div>
   </div>
@@ -237,7 +238,7 @@ const CONFIG = {
   shareTitle:"김용을 후원해주세요",
   shareText:"이재명의 대변인에서, 평당원의 대변인으로. 김용에게 힘을 실어 주세요 🙏",
 };
-holder.textContent=CONFIG.accountHolder; acctNum.textContent=CONFIG.accountNumber;
+holder.textContent=CONFIG.accountHolder; acctNum.textContent='농협 '+CONFIG.accountNumber;
 mail.textContent=CONFIG.receiptEmail; foot.textContent='영수증 문의 · '+CONFIG.receiptEmail;
 (function(){const i=new Image();i.onload=function(){const a=document.getElementById('credAv');
   a.style.background="url('assets/wws.jpg') center/cover no-repeat";a.textContent='';};i.src='assets/wws.jpg';})();
@@ -253,14 +254,22 @@ copyBtn.addEventListener('click',async()=>{const o=await cp(CONFIG.accountNumber
 
 // 은행앱 열기: 계좌 복사 → 은행앱 실행(scheme) → 붙여넣기
 const BANKS=[
-  {n:'국민',s:'kbbank://'},
-  {n:'신한',s:'shinhansol://'},
-  {n:'우리',s:'newsmartpib://'},
-  {n:'하나',s:'hanapush://'},
-  {n:'농협',s:'nhsmartbanking://'},
-  {n:'카카오뱅크',s:'kakaobank://'},
-  {n:'기업',s:'ibkonebank://'},
+  {n:'국민',s:['kbbank://','kb-bank://','newliiv://']},
+  {n:'신한',s:['shinhansol://']},
+  {n:'우리',s:['newsmartpib://','wooriwon://','com.wooribank.smart.npib://']},
+  {n:'하나',s:['hanapush://','hana1qbank://','hanabank://']},
+  {n:'농협',s:['nhallonepay://','nhsmartbanking://','nonghyupbank://','kftc-nh-app://']},
+  {n:'카카오뱅크',s:['kakaobank://']},
+  {n:'기업',s:['ibkonebank://','ibksmartbanking://','ibkbank://']},
 ];
+// 여러 scheme 순차 시도 → 앱이 열려 화면이 가려지면 중단
+function launchApp(schemes){
+  let done=false;
+  const stop=()=>{done=true;};
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();},{once:true});
+  window.addEventListener('pagehide',stop,{once:true});
+  schemes.forEach((s,i)=>setTimeout(()=>{if(!done){try{location.href=s;}catch(e){}}}, i*800));
+}
 const bg=document.getElementById('bgrid');
 BANKS.forEach(b=>{
   const el=document.createElement('button');
@@ -269,7 +278,7 @@ BANKS.forEach(b=>{
   el.addEventListener('click',async()=>{
     await cp(CONFIG.accountNumber);
     T(`✅ 계좌 복사됨! ${b.n} 앱에서 붙여넣기 하세요`);
-    setTimeout(()=>{try{location.href=b.s;}catch(e){}},400);
+    setTimeout(()=>launchApp(b.s),350);
   });
   bg.appendChild(el);
 });
