@@ -304,7 +304,7 @@ shareLink.addEventListener('click',async()=>{if(!(await sh())){const o=await cp(
 
 // ── 접속 기록(익명 집계): Apps Script 배포 후 LOG_URL만 채우면 작동 ──
 (async function(){
-  const LOG_URL = ""; // ← 여기에 Apps Script 웹앱 URL 붙여넣기 (비우면 미작동)
+  const LOG_URL = "https://script.google.com/macros/s/AKfycbwpbaDqBdAWRA6h955wBcdsgTUo63MeR1GDtgEQGCIoS-FeWlyeOGohBzem6V6YlMlNQw/exec";
   if(!/^https/.test(LOG_URL)) return;
   try{
     let g={};
