@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>김용을 후원해주세요 · 더불어민주당 최고위원 후보</title>
+<meta property="og:title" content="김용을 후원해주세요" />
+<meta property="og:description" content="이재명의 대변인에서, 평당원의 대변인으로. 김용에게 힘을 실어 주십시오." />
+<meta property="og:image" content="assets/photo.jpg" />
+<meta property="og:type" content="website" />
+
+<style>
+  :root{
+    --navy:#0A1A33;--navy2:#0E2547;--panel:#11294C;
+    --blue:#1E63C8;--blue-d:#134593;--yellow:#FFD400;
+    --ink:#0C1526;--muted:#9FB3D1;--line:rgba(255,255,255,.10);
+    --shadow:0 14px 34px -16px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0}
+  html,body{height:100%}
+  body{
+    font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    background:var(--navy);color:#EAF1FB;line-height:1.4;-webkit-font-smoothing:antialiased;letter-spacing:-.01em;
+  }
+  .wrap{max-width:440px;margin:0 auto;min-height:100%;
+    background:linear-gradient(180deg,var(--navy),var(--navy2));padding-bottom:26px}
+
+  /* ── 헤더 ── */
+  .top{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px}
+  .top .p{font-weight:800;font-size:13px;color:#fff}
+  .top .p b{color:var(--yellow)}
+  .top .ho{display:flex;align-items:center;gap:6px;font-weight:800;font-size:12px;color:#dbe6f5}
+  .top .ho .n{background:var(--yellow);color:var(--ink);width:22px;height:22px;border-radius:6px;
+    display:grid;place-items:center;font-size:14px;font-weight:900}
+
+  /* ── 히어로 배너(사진 + 문구) ── */
+  .hero{position:relative;margin:0 14px;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);
+    height:212px;background:#12305c}
+  .hero img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;display:block}
+  .hero .grad{position:absolute;inset:0;
+    background:linear-gradient(90deg,rgba(8,20,40,.92) 0%,rgba(8,20,40,.55) 42%,rgba(8,20,40,0) 66%)}
+  .hero .tx{position:absolute;left:16px;top:0;bottom:0;display:flex;flex-direction:column;
+    justify-content:center;max-width:64%}
+  .hero .tag{display:inline-block;background:var(--blue);color:#fff;font-weight:700;font-size:11.5px;
+    padding:4px 9px;border-radius:999px;margin-bottom:8px;width:fit-content}
+  .hero .sm{color:#cfe0f7;font-size:13px;font-weight:600}
+  .hero .lg{font-size:23px;font-weight:900;line-height:1.2;color:#fff;margin-top:2px}
+  .hero .lg .y{color:var(--yellow)}
+  .hero .nm{margin-top:8px;font-size:14px;color:#e9f1ff;font-weight:800}
+
+  /* ── 후원 계좌 카드 ── */
+  .card{margin:14px 14px 0;background:#fff;color:var(--ink);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .ctop{background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;padding:10px 16px;
+    display:flex;align-items:center;justify-content:space-between}
+  .ctop .l{font-weight:800;font-size:14px}
+  .ctop .nh{display:flex;align-items:center;gap:6px;font-weight:800;font-size:12.5px}
+  .ctop .nh i{width:18px;height:18px;border-radius:50%;background:#018941;position:relative}
+  .ctop .nh i::after{content:"N";position:absolute;inset:0;color:#fff;font-size:11px;display:grid;
+    place-items:center;font-weight:900}
+  .cbody{padding:13px 16px 2px;text-align:center}
+  .cbody .h{color:#5b6577;font-size:12px}
+  .cbody .num{font-size:25px;font-weight:900;margin-top:4px;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .copy{margin:12px 16px 6px;display:block;width:calc(100% - 32px);border:0;cursor:pointer;
+    background:var(--yellow);color:var(--ink);font-size:17px;font-weight:900;padding:15px;border-radius:13px;
+    box-shadow:0 9px 18px -8px rgba(255,212,0,.6);transition:transform .06s}
+  .copy:active{transform:scale(.98)}
+  .hint{text-align:center;color:#6b7688;font-size:12px;margin:0 16px 12px}
+
+  .amt{padding:0 12px 4px}
+  .amt .lb{font-size:12px;color:#6b7688;padding:2px 4px 6px;font-weight:600}
+  .chips{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+  .chip{border:1.5px solid #e3e8f0;background:#fff;border-radius:11px;padding:9px 2px;text-align:center;
+    font-weight:800;font-size:13.5px;color:var(--ink);cursor:pointer;transition:.12s}
+  .chip.on{border-color:var(--blue);background:#EAF2FE;color:var(--blue-d)}
+  .toss{display:block;margin:11px 16px 14px;text-align:center;text-decoration:none;border:1.5px solid #e3e8f0;
+    border-radius:13px;padding:12px;font-weight:800;color:var(--ink);font-size:14.5px;background:#fff}
+  .toss b{color:#0064FF}
+
+  /* ── 안내 ── */
+  .guide{margin:14px 14px 0;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+  .guide h3{font-size:14px;color:var(--yellow);font-weight:800;margin-bottom:7px}
+  .guide li{list-style:none;font-size:12.8px;color:#d3e0f2;padding:4px 0 4px 16px;position:relative;line-height:1.45}
+  .guide li::before{content:"·";position:absolute;left:5px;top:3px;color:var(--yellow);font-weight:900}
+  .guide .mail{color:var(--yellow);font-weight:700;word-break:break-all}
+  .cred{display:flex;align-items:center;gap:11px;margin:12px 14px 0;background:rgba(255,255,255,.05);
+    border:1px solid var(--line);border-radius:13px;padding:10px 13px}
+  .cred .av{width:40px;height:40px;border-radius:50%;background:#2b4670;flex:none;display:grid;place-items:center;
+    font-size:11px;color:#9fb3d1;overflow:hidden}
+  .cred .t{font-size:12.8px;color:#c7d6ec}.cred .t b{color:#fff}
+
+  .share{display:flex;gap:9px;margin:14px 14px 0}
+  .share button{flex:1;border:0;border-radius:12px;padding:13px;font-weight:900;font-size:14px;cursor:pointer}
+  .share .kko{background:#FEE500;color:#191600}.share .lnk{background:#fff;color:var(--ink)}
+  footer{margin:16px 16px 0;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);
+    font-size:11px;line-height:1.6;text-align:center}
+
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#0b1526;
+    color:#fff;padding:13px 20px;border-radius:12px;font-size:13.5px;font-weight:800;opacity:0;pointer-events:none;
+    transition:.25s;z-index:99;box-shadow:var(--shadow);border:1px solid var(--line);max-width:88vw;text-align:center}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="p">더불어<b>민주당</b> · 최고위원 후보</div>
+    <div class="ho"><span class="n">2</span> 김용</div>
+  </div>
+
+  <!-- 히어로: 사진 + 문구 (한 화면 압축) -->
+  <div class="hero">
+    <img src="assets/photo.jpg" alt="김용 후보" />
+    <div class="grad"></div>
+    <div class="tx">
+      <span class="tag">김용을 후원해 주세요</span>
+      <span class="sm">이재명의 대변인에서,</span>
+      <span class="lg">평당원의 <span class="y">대변인</span>으로.</span>
+      <span class="nm">더불어민주당 최고위원 후보 · 김용</span>
+    </div>
+  </div>
+
+  <!-- 후원 계좌 -->
+  <div class="card">
+    <div class="ctop"><span class="l">후원 계좌</span><span class="nh"><i></i> 농협은행</span></div>
+    <div class="cbody">
+      <div class="h">예금주 · <span id="holder"></span></div>
+      <div class="num" id="acctNum"></div>
+    </div>
+    <button class="copy" id="copyBtn">📋 계좌번호 복사하기</button>
+    <p class="hint">복사 후 은행 앱에서 <b>붙여넣기</b>만 하면 바로 송금돼요</p>
+    <div class="amt">
+      <div class="lb">마음만큼 골라주세요</div>
+      <div class="chips" id="chips">
+        <div class="chip" data-amt="10000">1만원</div>
+        <div class="chip" data-amt="30000">3만원</div>
+        <div class="chip" data-amt="50000">5만원</div>
+        <div class="chip" data-amt="100000">10만원</div>
+      </div>
+    </div>
+    <button class="toss" id="nhBtn" style="width:calc(100% - 32px);cursor:pointer">🏦 <b style="color:#018941">농협</b>으로 간편송금하기</button>
+  </div>
+
+  <!-- 후원 안내 -->
+  <div class="guide">
+    <h3>후원 안내</h3>
+    <ul>
+      <li>개인이 <b>연간 200만원</b>까지 후원 가능합니다. (외국인·법인·단체·공무원 불가)</li>
+      <li><b>10만원 이하 전액 세액공제</b> (10만원 초과분 15~25% 세액공제)</li>
+      <li>영수증 신청 : <span class="mail" id="mail"></span> 으로 이름·주소·주민번호·연락처</li>
+    </ul>
+  </div>
+
+  <div class="cred">
+    <div class="av" id="credAv">우원식</div>
+    <div class="t"><b>후원회장 우원식</b><br>믿고 함께하는 후원, 투명하게 쓰겠습니다.</div>
+  </div>
+
+  <div class="share">
+    <button class="kko" id="shareKko">💬 카톡으로 알리기</button>
+    <button class="lnk" id="shareLink">🔗 링크 공유</button>
+  </div>
+
+  <footer>
+    더불어민주당 최고위원 경선후보자 김용 후원회<br>
+    <span id="foot"></span>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+const CONFIG = {
+  bankName:"농협", accountNumber:"301-0389-5367-61",
+  accountHolder:"더불어민주당 최고위원 경선후보자 김용",
+  receiptEmail:"victory9427@gmail.com",
+  shareTitle:"김용을 후원해주세요",
+  shareText:"이재명의 대변인에서, 평당원의 대변인으로. 김용에게 힘을 실어 주세요 🙏",
+};
+holder.textContent=CONFIG.accountHolder; acctNum.textContent=CONFIG.accountNumber;
+mail.textContent=CONFIG.receiptEmail; foot.textContent='영수증 문의 · '+CONFIG.receiptEmail;
+(function(){const i=new Image();i.onload=function(){const a=document.getElementById('credAv');
+  a.style.background="url('assets/wws.jpg') center/cover no-repeat";a.textContent='';};i.src='assets/wws.jpg';})();
+
+let sel=0;
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
+  sel=parseInt(c.dataset.amt,10);}));
+function T(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');
+  clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),2300);}
+async function cp(x){try{await navigator.clipboard.writeText(x);return true;}catch(e){
+  const t=document.createElement('textarea');t.value=x;t.style.position='fixed';t.style.opacity='0';
+  document.body.appendChild(t);t.select();let o=false;try{o=document.execCommand('copy');}catch(_){}
+  document.body.removeChild(t);return o;}}
+copyBtn.addEventListener('click',async()=>{const o=await cp(CONFIG.accountNumber);
+  T(o?'✅ 계좌번호를 복사했어요! 은행 앱에 붙여넣기 하세요':'번호를 길게 눌러 복사해 주세요');});
+// 농협 간편송금: 계좌 자동복사 → 농협앱 실행 (앱에 붙여넣기)
+nhBtn.addEventListener('click',async()=>{
+  await cp(CONFIG.accountNumber);
+  T('✅ 계좌 복사 완료! 농협 앱을 열어 붙여넣기 하세요');
+  const schemes=['nhallonepay://','nhsmartbanking://','nhonqbank://'];
+  let done=false;
+  const tryOpen=(i)=>{if(i>=schemes.length||done)return;
+    try{const t=Date.now();location.href=schemes[i];
+      setTimeout(()=>{if(!done&&Date.now()-t<1500)tryOpen(i+1);},700);}catch(e){tryOpen(i+1);}};
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)done=true;},{once:true});
+  setTimeout(()=>tryOpen(0),450);});
+async function sh(){const d={title:CONFIG.shareTitle,text:CONFIG.shareText,url:location.href};
+  if(navigator.share){try{await navigator.share(d);return true;}catch(e){}}return false;}
+shareKko.addEventListener('click',async()=>{if(!(await sh())){const o=await cp(location.href);
+  T(o?'🔗 링크를 복사했어요! 카톡에 붙여넣어 보내세요':'주소를 복사해 주세요');}});
+shareLink.addEventListener('click',async()=>{if(!(await sh())){const o=await cp(location.href);
+  T(o?'🔗 링크를 복사했어요!':'주소를 복사해 주세요');}});
+</script>
+</body>
+</html>
