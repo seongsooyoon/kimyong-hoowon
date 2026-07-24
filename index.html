@@ -309,11 +309,11 @@ shareLink.addEventListener('click',async()=>{if(!(await sh())){const o=await cp(
   try{
     let g={};
     try{ g = await (await fetch('https://ipwho.is/')).json(); }catch(e){}
-    const body = JSON.stringify({
-      country:g.country||'', region:g.region||'', city:g.city||'',
-      ref:document.referrer||'', ua:navigator.userAgent||''
+    const q = new URLSearchParams({
+      log:'1', country:g.country||'', region:g.region||'', city:g.city||'',
+      ref:document.referrer||'직접', ua:navigator.userAgent||''
     });
-    fetch(LOG_URL,{method:'POST',body,keepalive:true}); // text/plain → CORS preflight 회피
+    new Image().src = LOG_URL + '?' + q.toString(); // GET 픽셀 비콘 → CORS/리다이렉트 회피
   }catch(e){}
 })();
 </script>
