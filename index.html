@@ -4,10 +4,14 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>김용을 후원해주세요 · 더불어민주당 최고위원 후보</title>
-<meta property="og:title" content="김용을 후원해주세요" />
-<meta property="og:description" content="이재명의 대변인에서, 평당원의 대변인으로. 김용에게 힘을 실어 주십시오." />
-<meta property="og:image" content="assets/photo.jpg" />
+<meta property="og:title" content="김용을 후원해주세요 · 눌러서 후원하기" />
+<meta property="og:description" content="기호 2번 김용 · 더불어민주당 최고위원 후보. 눌러서 후원 페이지로 이동하세요." />
+<meta property="og:image" content="https://seongsooyoon.github.io/kimyong-hoowon/assets/og.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://seongsooyoon.github.io/kimyong-hoowon/" />
 <meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
 
 <style>
   :root{
@@ -297,6 +301,21 @@ shareKko.addEventListener('click',async()=>{if(!(await sh())){const o=await cp(l
   T(o?'🔗 링크를 복사했어요! 카톡에 붙여넣어 보내세요':'주소를 복사해 주세요');}});
 shareLink.addEventListener('click',async()=>{if(!(await sh())){const o=await cp(location.href);
   T(o?'🔗 링크를 복사했어요!':'주소를 복사해 주세요');}});
+
+// ── 접속 기록(익명 집계): Apps Script 배포 후 LOG_URL만 채우면 작동 ──
+(async function(){
+  const LOG_URL = ""; // ← 여기에 Apps Script 웹앱 URL 붙여넣기 (비우면 미작동)
+  if(!/^https/.test(LOG_URL)) return;
+  try{
+    let g={};
+    try{ g = await (await fetch('https://ipwho.is/')).json(); }catch(e){}
+    const body = JSON.stringify({
+      country:g.country||'', region:g.region||'', city:g.city||'',
+      ref:document.referrer||'', ua:navigator.userAgent||''
+    });
+    fetch(LOG_URL,{method:'POST',body,keepalive:true}); // text/plain → CORS preflight 회피
+  }catch(e){}
+})();
 </script>
 </body>
 </html>

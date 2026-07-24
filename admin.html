@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>김용 후원 · 접속 통계 (관리자)</title>
+<style>
+  :root{--navy:#0A1A33;--blue:#0050A5;--blue-d:#00397A;--yellow:#FFD400;--line:#e5e9f0;--ink:#14202f;--muted:#6b7688}
+  *{box-sizing:border-box;margin:0}
+  body{font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    background:#eef1f6;color:var(--ink);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:18px 16px 60px}
+  h1{font-size:20px;margin:8px 2px 2px}
+  .sub{color:var(--muted);font-size:13px;margin:0 2px 16px}
+  .gate{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:20px}
+  .gate input{width:100%;padding:13px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;margin:10px 0}
+  .gate button,.btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:13px 18px;
+    font-weight:800;font-size:15px;cursor:pointer;width:100%}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 18px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .card .n{font-size:26px;font-weight:900;color:var(--blue-d)}
+  .card .l{font-size:12px;color:var(--muted);margin-top:2px}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+  .panel h2{font-size:15px;margin:0 0 12px;color:var(--blue-d)}
+  .row{display:grid;grid-template-columns:92px 1fr 46px;align-items:center;gap:8px;margin:5px 0}
+  .row .k{font-size:12.5px;color:#3b4653;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar{height:16px;background:#eaf2fe;border-radius:6px;overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--blue-d))}
+  .row .v{font-size:12.5px;font-weight:800;text-align:right;color:var(--ink)}
+  .muted{color:var(--muted);font-size:12px}
+  .err{color:#c0392b;font-size:13px;margin-top:8px}
+  .top{display:flex;justify-content:space-between;align-items:center}
+  .rf{width:auto;padding:8px 14px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>📊 김용 후원 · 접속 통계</h1><p class="sub">관리자 전용 · IP기반 지역(시/도 수준) 추정</p></div>
+  </div>
+
+  <div class="gate" id="gate">
+    <b>관리자 비밀번호</b>
+    <input type="password" id="pw" placeholder="비밀번호 입력" />
+    <button id="loginBtn">조회하기</button>
+    <div class="err" id="err"></div>
+    <p class="muted" style="margin-top:10px">※ 먼저 analytics.gs를 배포하고 아래 WEBAPP_URL을 채워야 합니다.</p>
+  </div>
+
+  <div id="dash" style="display:none">
+    <div class="cards">
+      <div class="card"><div class="n" id="cTotal">-</div><div class="l">누적 접속</div></div>
+      <div class="card"><div class="n" id="cToday">-</div><div class="l">오늘 접속</div></div>
+      <div class="card"><div class="n" id="cRegion">-</div><div class="l">지역 수</div></div>
+    </div>
+    <div class="panel"><div class="top"><h2>📍 지역별 접속 (IP 추정)</h2></div><div id="pRegion"></div></div>
+    <div class="panel"><h2>📅 일별 접속</h2><div id="pDaily"></div></div>
+    <div class="panel"><h2>⏰ 시간별 접속</h2><div id="pHourly"></div></div>
+    <div class="panel"><h2>📱 기기</h2><div id="pMobile"></div></div>
+    <button class="btn rf" id="refresh">🔄 새로고침</button>
+    <p class="muted" id="updated" style="margin-top:8px"></p>
+  </div>
+</div>
+
+<script>
+/* ── Apps Script 웹앱 URL을 여기에 붙여넣기 ── */
+const WEBAPP_URL = "";  // 예: https://script.google.com/macros/s/AKfy.../exec
+/* ─────────────────────────────────────────── */
+
+const $=id=>document.getElementById(id);
+function rows(el,obj,{sort='desc'}={}){
+  const ent=Object.entries(obj);
+  if(sort==='key') ent.sort((a,b)=>a[0]<b[0]?-1:1);
+  else ent.sort((a,b)=>b[1]-a[1]);
+  const max=Math.max(1,...ent.map(e=>e[1]));
+  el.innerHTML = ent.length? ent.map(([k,v])=>
+    `<div class="row"><div class="k">${k}</div><div class="bar"><i style="width:${Math.round(v/max*100)}%"></i></div><div class="v">${v}</div></div>`
+  ).join('') : '<p class="muted">데이터 없음</p>';
+}
+async function load(pw){
+  if(!/^https/.test(WEBAPP_URL)){ $('err').textContent='WEBAPP_URL이 비어있습니다. analytics.gs 배포 후 URL을 넣으세요.'; return; }
+  $('err').textContent='조회 중...';
+  try{
+    const r=await fetch(`${WEBAPP_URL}?key=${encodeURIComponent(pw)}`);
+    const d=await r.json();
+    if(!d.ok){ $('err').textContent = d.err==='unauthorized'?'비밀번호가 틀렸습니다.':('오류: '+d.err); return; }
+    $('gate').style.display='none'; $('dash').style.display='block';
+    $('cTotal').textContent=d.total; $('cToday').textContent=d.today;
+    $('cRegion').textContent=Object.keys(d.region).length;
+    rows($('pRegion'),d.region); rows($('pDaily'),d.daily,{sort:'key'});
+    rows($('pHourly'),d.hourly,{sort:'key'}); rows($('pMobile'),d.mobile);
+    $('updated').textContent='업데이트: '+(d.updated||'');
+    window.__pw=pw;
+  }catch(e){ $('err').textContent='네트워크 오류: '+e; }
+}
+$('loginBtn').onclick=()=>load($('pw').value.trim());
+$('pw').addEventListener('keydown',e=>{if(e.key==='Enter')load($('pw').value.trim());});
+document.addEventListener('click',e=>{if(e.target.id==='refresh')load(window.__pw);});
+</script>
+</body>
+</html>
