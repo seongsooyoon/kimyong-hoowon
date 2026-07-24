@@ -34,14 +34,15 @@
     display:grid;place-items:center;font-size:18px;font-weight:900}
 
   /* ── 히어로 배너(사진 + 문구) ── */
-  .hero{display:flex;align-items:stretch;margin:0 14px;border-radius:16px;overflow:hidden;
-    box-shadow:var(--shadow);height:232px;
+  .hero{position:relative;margin:0 14px;border-radius:16px;overflow:hidden;
+    box-shadow:var(--shadow);height:238px;
     background:linear-gradient(135deg,#0a2a50,#0f3061)}
-  .hero .pic{flex:0 0 47%;position:relative;overflow:hidden;background:#0a2a50}
-  .hero .pic img{width:100%;height:100%;object-fit:cover;object-position:50% 8%;display:block}
+  .hero .pic{position:absolute;right:0;top:0;bottom:0;width:54%;overflow:hidden;background:#0a2a50}
+  .hero .pic img{width:100%;height:100%;object-fit:cover;object-position:50% 6%;display:block}
   .hero .pic::before{content:"";position:absolute;inset:0;
-    background:linear-gradient(90deg,rgba(14,37,71,.85) 0%,rgba(14,37,71,0) 22%)}
-  .hero .tx{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 6px 0 16px;z-index:2}
+    background:linear-gradient(90deg,rgba(10,42,80,.96) 0%,rgba(10,42,80,.35) 16%,rgba(10,42,80,0) 40%)}
+  .hero .tx{position:absolute;left:16px;top:0;bottom:0;width:48%;display:flex;flex-direction:column;
+    justify-content:center;z-index:2}
   .hero .tag{display:inline-block;background:var(--blue);color:#fff;font-weight:700;font-size:11.5px;
     padding:4px 9px;border-radius:999px;margin-bottom:8px;width:fit-content}
   .hero .sm{color:#cfe0f7;font-size:13px;font-weight:600}
@@ -78,14 +79,19 @@
   .chip{border:1.5px solid #e3e8f0;background:#fff;border-radius:11px;padding:9px 2px;text-align:center;
     font-weight:800;font-size:13.5px;color:var(--ink);cursor:pointer;transition:.12s}
   .chip.on{border-color:var(--blue);background:#EAF2FE;color:var(--blue-d)}
+  .banktoggle{margin:2px 16px 6px;display:flex;align-items:center;justify-content:center;gap:8px;
+    width:calc(100% - 32px);border:1.5px solid var(--blue);background:#fff;cursor:pointer;
+    color:var(--blue-d);font-size:16px;font-weight:900;padding:14px;border-radius:13px;transition:.12s}
+  .banktoggle:active{transform:scale(.98);background:#f2f7fd}
+  .banktoggle .cr{font-size:12px;transition:transform .2s}
+  .banktoggle.open .cr{transform:rotate(180deg)}
   .banks{padding:2px 12px 6px}
-  .banks .lb{font-size:12px;color:#6b7688;padding:8px 4px 8px;font-weight:600}
+  .banks .lb{font-size:12px;color:#6b7688;padding:4px 4px 8px;font-weight:600;text-align:center}
   .banks .lb span{font-weight:500;color:#9aa3af}
-  .bgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-  .bk{border:1.5px solid #e3e8f0;background:#fff;border-radius:11px;padding:10px 2px;text-align:center;
-    font-weight:800;font-size:12.5px;color:var(--ink);cursor:pointer;transition:.12s;line-height:1.2}
-  .bk:active{transform:scale(.95);background:#f0f4fa}
-  .bk i{display:block;width:16px;height:16px;border-radius:50%;margin:0 auto 4px}
+  .bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .bk{border:1.5px solid #e3e8f0;background:#fff;border-radius:12px;padding:14px 2px;text-align:center;
+    font-weight:800;font-size:14px;color:var(--ink);cursor:pointer;transition:.12s;line-height:1.2}
+  .bk:active{transform:scale(.95);background:#eef3fb;border-color:var(--blue)}
   .toss{display:block;margin:11px 16px 14px;text-align:center;text-decoration:none;border:1.5px solid #e3e8f0;
     border-radius:13px;padding:12px;font-weight:800;color:var(--ink);font-size:14.5px;background:#fff}
   .toss b{color:#0064FF}
@@ -150,8 +156,9 @@
     </div>
     <button class="copy" id="copyBtn">📋 계좌번호 복사하기</button>
     <p class="hint">복사 후 은행 앱에서 <b>붙여넣기</b>만 하면 바로 송금돼요</p>
-    <div class="banks">
-      <div class="lb">🏦 은행앱 열기 <span>· 계좌 복사 후 앱에서 붙여넣기</span></div>
+    <button class="banktoggle" id="bankToggle">🏦 은행으로 계좌이체 <span class="cr">▾</span></button>
+    <div class="banks" id="bankPanel" style="display:none">
+      <div class="lb">은행 선택 시 <span>계좌 복사 후 해당 은행앱이 열립니다</span></div>
       <div class="bgrid" id="bgrid"></div>
     </div>
     <a class="give" id="giveBtn" href="https://www.give.go.kr/portal/give.do?supportNo=32753" target="_blank" rel="noopener">
@@ -211,7 +218,7 @@
   </div>
 
   <div class="share">
-    <button class="kko" id="shareKko">💬 카톡으로 알리기</button>
+    <button class="kko" id="shareKko">💬 카톡으로 친구에게 알리기</button>
     <button class="lnk" id="shareLink">🔗 링크 공유</button>
   </div>
 
@@ -246,26 +253,31 @@ copyBtn.addEventListener('click',async()=>{const o=await cp(CONFIG.accountNumber
 
 // 은행앱 열기: 계좌 복사 → 은행앱 실행(scheme) → 붙여넣기
 const BANKS=[
-  {n:'국민',s:'kbbank://',c:'#FFBC00'},
-  {n:'신한',s:'shinhansol://',c:'#0046FF'},
-  {n:'우리',s:'NewSmartPib://',c:'#0067AC'},
-  {n:'하나',s:'hanabank://',c:'#008485'},
-  {n:'농협',s:'nhallonepay://',c:'#19B054'},
-  {n:'카카오',s:'kakaobank://',c:'#FFDE00'},
-  {n:'기업',s:'ibksmartbanking://',c:'#0F4C97'},
-  {n:'케이뱅크',s:'kbankpib://',c:'#5B5B5B'},
+  {n:'국민',s:'kbbank://'},
+  {n:'신한',s:'shinhansol://'},
+  {n:'우리',s:'newsmartpib://'},
+  {n:'하나',s:'hanapush://'},
+  {n:'농협',s:'nhsmartbanking://'},
+  {n:'카카오뱅크',s:'kakaobank://'},
+  {n:'기업',s:'ibkonebank://'},
 ];
 const bg=document.getElementById('bgrid');
 BANKS.forEach(b=>{
   const el=document.createElement('button');
   el.className='bk';
-  el.innerHTML=`<i style="background:${b.c}"></i>${b.n}`;
+  el.textContent=b.n;
   el.addEventListener('click',async()=>{
     await cp(CONFIG.accountNumber);
     T(`✅ 계좌 복사됨! ${b.n} 앱에서 붙여넣기 하세요`);
     setTimeout(()=>{try{location.href=b.s;}catch(e){}},400);
   });
   bg.appendChild(el);
+});
+// 은행 묶음 펼치기/접기
+bankToggle.addEventListener('click',()=>{
+  const open=bankPanel.style.display!=='none';
+  bankPanel.style.display=open?'none':'block';
+  bankToggle.classList.toggle('open',!open);
 });
 async function sh(){const d={title:CONFIG.shareTitle,text:CONFIG.shareText,url:location.href};
   if(navigator.share){try{await navigator.share(d);return true;}catch(e){}}return false;}
